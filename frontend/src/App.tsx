@@ -36,8 +36,7 @@ function App() {
   const optimizeOrder = () => {
     const varietyDecay = 1.0 - (variety * 0.15);
     
-    // Variety value is still hardcoded at the endpoint for now
-    axios.get(`/optimize/1/${budget}`)
+    axios.get(`/optimize/1/${budget}/${varietyDecay}`)
       .then(response => {
         setOptimalOrder(response.data);
       })

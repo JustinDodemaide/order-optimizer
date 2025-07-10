@@ -1,7 +1,16 @@
 import express, { Request, Response } from 'express';
+import sqlite3 from 'sqlite3';
+import { open } from 'sqlite';
 
 const app = express();
 const PORT = 3000;
+
+async function getDb() {
+  return open({
+    filename: './database.db',
+    driver: sqlite3.Database
+  });
+}
 
 // --- Definitions ---
 interface MenuItem {
@@ -22,12 +31,6 @@ interface UserScores {
 
 // --- Placeholder values ---
 const defaultScore = -1;
-
-const sampleMenu: MenuItem[] = [
-  {id: 1, name: "Burger", price: 12.99, calories: 600, score: defaultScore},
-  {id: 2, name: "Sushi", price: 15.99, calories: 400, score: defaultScore},
-  {id: 3, name: "Crunchwrap", price: 6.19, calories: 530, score: defaultScore},
-];
 
 const users: { [key: number]: User } = {
   1:{
@@ -55,14 +58,15 @@ app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
 });
 
-app.get('/menu', (req: Request, res: Response) => {
-  res.json(sampleMenu);
+app.get('/menu', async (req: Request, res: Response) => {
+  const db = await getDb();
+  const menuItems = await db.all('SELECT * FROM menu_items');
+  res.json(menuItems);
 });
 
-app.get('/optimize/:userId/:budget', (req: Request, res: Response) => {
+app.get('/optimize/:userId/:budget/:variety', async (req: Request, res: Response) => {
   // 1.0, 0.85, 0.7, 0.55, 0.4
-  const variety: number = 0.55;
-
+  const variety: number = parseFloat(req.params.variety);
   const userId = parseInt(req.params.userId, 10);
   const budgetNum = parseFloat(req.params.budget);
 
@@ -70,11 +74,17 @@ app.get('/optimize/:userId/:budget', (req: Request, res: Response) => {
     //return res.status(400).json({ error: 'Budget is too high' });
   //}
 
-  // This is the line that was unhappy with undefined types
+  const db = await getDb();
+  const menuItems = await db.all('SELECT * FROM menu_items')
+  const userRatings = await db.all(
+    'SELECT * FROM user_ratings WHERE user_id = ?',
+    [userId]
+  );
+
   let userScores:{[key: number]: number} = {};
-  if (users[userId]) {
-    userScores = users[userId].scores;
-  }
+  userRatings.forEach(rating => {
+    userScores[rating.item_id] = rating.rating;
+  });
 
   /*
   - User enters budget and scores 
@@ -83,6 +93,7 @@ app.get('/optimize/:userId/:budget', (req: Request, res: Response) => {
   - Use 0/1 knapsack to generate most optimal order
   */
 
+  // Add user scores to the menu items
   const scoredItems: {
     id: number;
     name: string;
@@ -90,7 +101,7 @@ app.get('/optimize/:userId/:budget', (req: Request, res: Response) => {
     score: number;
     instance: number;
   }[] = [];
-  for (const item of sampleMenu) {
+  for (const item of menuItems) {
     const userScore = userScores[item.id];
     if(userScore === undefined)
       continue;
