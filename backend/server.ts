@@ -5,6 +5,8 @@ import { open } from 'sqlite';
 const app = express();
 const PORT = 3000;
 
+app.use(express.json());
+
 async function getDb() {
   return open({
     filename: './database.db',
@@ -168,3 +170,24 @@ app.get('/optimize/:userId/:budget/:variety', async (req: Request, res: Response
 
   res.send(optimalOrder.reverse())
 });
+
+app.get('/test', async (req: Request, res: Response) => {
+  const db = await getDb();
+  const items = await db.all('SELECT * FROM user_ratings');
+  res.json({items});
+});
+
+app.put('/user/:userId/rating/:itemId', async (req:Request, res:Response) => {
+  const userId = parseInt(req.params.userId);
+  const itemId = parseInt(req.params.itemId);
+  const rating = req.body.rating;
+  
+  const db = await getDb();
+  await db.run(
+    "INSERT OR REPLACE INTO user_ratings (user_id, item_id, rating)\
+    VALUES (?,?,?)",
+    [userId, itemId, rating]
+  );
+
+  res.json({success:true})
+})

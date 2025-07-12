@@ -18,19 +18,33 @@ function App() {
   const [optimalOrder, setOptimalOrder] = useState<any[]>([]);
 
   useEffect(() => {
-    axios.get('/menu')
-      .then(response => {
-        setMenu(response.data);
-        // Initialize ratings
-        const initialRatings: {[key: number]: number} = {};
-        response.data.forEach((item: MenuItem) => {
-          initialRatings[item.id] = 3; // Default rating
-        });
-        setRatings(initialRatings);
-      })
-      .catch(error => {
-        console.error('Error fetching menu:', error);
+    const userId = 1; // Placeholder
+
+    const defaultRating = 3;
+    Promise.all([
+      axios.get('/menu'),
+      axios.get(`/user/${userId}/ratings`)
+    ])
+    .then(([menuResponse, ratingsResponse]) => {
+      const menuData = menuResponse.data;
+      const userRatings = ratingsResponse.data;
+
+      setMenu(menuData);
+
+      // Set default rating for all items
+      const defaultRatings: {[key: number]: number} = {};
+      menuData.forEach((item: MenuItem) => {
+        defaultRatings[item.id] = defaultRating;
       });
+
+      // Then replace default rating with any user-specified ratings
+      const initialRatings = { ...defaultRatings, ...userRatings };
+      setRatings(initialRatings);
+      
+    })
+    .catch(error => {
+      console.error('Error fetching initial data:', error);
+    });
   }, []);
 
   const optimizeOrder = () => {
@@ -79,7 +93,14 @@ function App() {
             min="1"
             max="5"
             value={ratings[item.id] || 3}
-            onChange={(e) => setRatings({...ratings, [item.id]: parseInt(e.target.value)})}
+            onChange={(e) => {
+              const newRating = parseInt(e.target.value);
+              setRatings({...ratings, [item.id]: newRating});
+              
+              // save to database
+              axios.put(`/user/1/rating/${item.id}`, { rating: newRating })
+                .catch(error => console.error('Failed to save rating:', error));
+            }}
           />
           <span>{ratings[item.id] || 3} stars</span>
         </div>
