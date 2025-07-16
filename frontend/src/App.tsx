@@ -2,118 +2,159 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './App.css';
 
+
 interface MenuItem {
   id: number;
   name: string;
   price: number;
   calories: number;
-  score: number;
+  restaurant_id: number;
 }
 
 function App() {
   const [menu, setMenu] = useState<MenuItem[]>([]);
   const [budget, setBudget] = useState<string>('20');
-  const [ratings, setRatings] = useState<{[key: number]: number}>({});
+  const [ratings, setRatings] = useState<{ [key: number]: number }>({});
   const [variety, setVariety] = useState<number>(3);
   const [optimalOrder, setOptimalOrder] = useState<any[]>([]);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [restaurantId] = useState(1); // hardcoded until multiple menus are added
+
 
   useEffect(() => {
-    const userId = 1; // Placeholder
-
-    const defaultRating = 3;
-    Promise.all([
-      axios.get('/menu'),
-      axios.get(`/user/${userId}/ratings`)
-    ])
-    .then(([menuResponse, ratingsResponse]) => {
-      const menuData = menuResponse.data;
-      const userRatings = ratingsResponse.data;
-
-      setMenu(menuData);
-
-      // Set default rating for all items
-      const defaultRatings: {[key: number]: number} = {};
-      menuData.forEach((item: MenuItem) => {
-        defaultRatings[item.id] = defaultRating;
+    axios.get('/menu')
+      .then(response => {
+        setMenu(response.data);
+      })
+      .catch(error => {
+        console.error('Error fetching menu:', error);
       });
-
-      // Then replace default rating with any user-specified ratings
-      const initialRatings = { ...defaultRatings, ...userRatings };
-      setRatings(initialRatings);
-      
-    })
-    .catch(error => {
-      console.error('Error fetching initial data:', error);
-    });
   }, []);
 
+
+  const handleRating = (itemId: number, currentRating: number) => {
+    const newRating = currentRating === 1 ? 0.1 : 1; // Toggle between 0 and 1
+    setRatings({ ...ratings, [itemId]: newRating });
+  };
+
+
   const optimizeOrder = () => {
-    const varietyDecay = 1.0 - (variety * 0.15);
-    
-    axios.get(`/optimize/1/${budget}/${varietyDecay}`)
+    // Prepare the data for the POST request
+    const payload = {
+      budget: parseFloat(budget),
+      variety: variety,
+      scores: ratings,
+      restaurantId: restaurantId,
+    };
+
+    axios.post('/optimize', payload)
       .then(response => {
         setOptimalOrder(response.data);
       })
       .catch(error => {
-        console.error('Error optimizing:', error);
+        console.error('Error optimizing order:', error);
       });
+  };
+
+
+
+  // Search functionality
+  const filteredMenu = menu.filter(item =>
+    item.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  // Determine the CSS class for a menu item based on its rating
+  const getRatingClass = (itemId: number) => {
+    return ratings[itemId] === 1 ? 'liked' : '';
   };
 
   return (
     <div className="App">
-      <h1>Order Optimizer</h1>
-      
-      <div>
-        <label>Budget: $</label>
-        <input 
-          type="number" 
-          value={budget} 
-          onChange={(e) => setBudget(e.target.value)}
-        />
-      </div>
+      <div className="container">
+        <h1>Order Optimizer</h1>
 
-      <div>
-        <label>Variety Preference: </label>
-        <input
-          type="range"
-          min="1"
-          max="5"
-          value={variety}
-          onChange={(e) => setVariety(parseInt(e.target.value))}
-        />
-        <span>{variety} (1=Duplicates OK, 5=Max Variety)</span>
-      </div>
+        <div className="instructions">
+          Give your favorite items a thumbs up, set your budget and variety preference,
+          then generate your optimal order!
+        </div>
 
-      <h2>Rate Menu Items (1-5):</h2>
-      {menu.map(item => (
-        <div key={item.id}>
-          {item.name} - ${item.price}
+        <div className="budget-section">
+          <label>Budget: $</label>
+          <input
+            type="number"
+            value={budget}
+            onChange={(e) => setBudget(e.target.value)}
+            min="1"
+            step="0.01"
+          />
+        </div>
+
+        <div className="menu-section">
+          <div className="menu-header">
+            <h2>Menu</h2>
+            <input
+              type="text"
+              placeholder="Search..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="search-input"
+            />
+          </div>
+
+          <div className="menu-items">
+            {filteredMenu.map(item => (
+              <div key={item.id} className={`menu-item ${getRatingClass(item.id)}`}>
+                <span className="item-name">{item.name} - ${item.price.toFixed(2)}</span>
+                <div className="rating-buttons">
+                  <button
+                    className={`thumb-up ${ratings[item.id] === 1 ? 'active' : ''}`}
+                    onClick={() => handleRating(item.id, ratings[item.id] || 0)}
+                  >
+                    👍
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="variety-section">
+          <label>Variety: </label>
           <input
             type="range"
             min="1"
             max="5"
-            value={ratings[item.id] || 3}
-            onChange={(e) => {
-              const newRating = parseInt(e.target.value);
-              setRatings({...ratings, [item.id]: newRating});
-              
-              // save to database
-              axios.put(`/user/1/rating/${item.id}`, { rating: newRating })
-                .catch(error => console.error('Failed to save rating:', error));
-            }}
+            value={variety}
+            onChange={(e) => setVariety(parseInt(e.target.value))}
+            className="variety-slider"
           />
-          <span>{ratings[item.id] || 3} stars</span>
+          <span className="variety-label">
+            {variety === 1 ? 'Love duplicates':
+              variety === 2 ? 'Ok with duplicates':
+              variety === 3 ? 'Neutral':
+              variety === 4 ? 'More variety':
+              variety === 5 ? 'Max variety' :
+                ''}
+          </span>
         </div>
-      ))}
 
-      <button onClick={optimizeOrder}>Make order</button>
+        <button className="generate-button" onClick={optimizeOrder}>
+          Generate
+        </button>
 
-      {optimalOrder.length > 0 && (
-        <div>
-          <h2>Your Optimal Order:</h2>
-          <pre>{JSON.stringify(optimalOrder, null, 2)}</pre>
-        </div>
-      )}
+        {optimalOrder.length > 0 && (
+          <div className="results-section">
+            {optimalOrder.map((item, index) => (
+              <span key={index} className="result-item">
+                {item.name}{index < optimalOrder.length - 1 ? ', ' : ''}
+              </span>
+            ))}
+            <div className="total-price">
+              Total: ${optimalOrder.reduce((sum, item) => sum + item.price, 0).toFixed(2)}
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

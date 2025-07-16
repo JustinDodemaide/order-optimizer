@@ -14,7 +14,7 @@ async function getDb() {
   });
 }
 
-// --- Definitions ---
+
 interface MenuItem {
   id: number;
   name: string;
@@ -23,37 +23,9 @@ interface MenuItem {
   score: number;
 }
 
-interface User {
-  scores: UserScores;
-}
 
-interface UserScores {
-  [key: number]: number;
-}
-
-// --- Placeholder values ---
-const defaultScore = -1;
-
-const users: { [key: number]: User } = {
-  1:{
-    scores:{
-        1: 5,
-        2: 3,
-        3: 4
-    }
-  },
-  2:{
-    scores:{
-      1: 1,
-      2: 3,
-      3: 4
-    }
-  }
-};
-
-// --- Endpoints ---
 app.get('/', (req: Request, res: Response) => {
-  res.json({ message: 'Restaurant Optimizer API' });
+  res.json({ message: 'Order Optimizer API' });
 });
 
 app.listen(PORT, () => {
@@ -66,30 +38,23 @@ app.get('/menu', async (req: Request, res: Response) => {
   res.json(menuItems);
 });
 
-app.get('/optimize/:userId/:budget/:variety', async (req: Request, res: Response) => {
-  // 1.0, 0.85, 0.7, 0.55, 0.4
-  const variety: number = parseFloat(req.params.variety);
-  const userId = parseInt(req.params.userId, 10);
-  const budgetNum = parseFloat(req.params.budget);
+app.post('/optimize', async (req: Request, res: Response) => {
+  const { budget, variety, scores, restaurantId } = req.body;
+  // restaurantId will be implemented later
 
-  //if (budgetNum > 2500) {
-    //return res.status(400).json({ error: 'Budget is too high' });
-  //}
+  //const varietyDecayMap = [1.0, 0.85, 0.7, 0.55, 0.4];
+  //const variety = varietyDecayMap[varietyIndex - 1];
+
+  if (budget > 2500) {
+    res.status(400).json({ error: 'Budget is too high' });
+  }
 
   const db = await getDb();
-  const menuItems = await db.all('SELECT * FROM menu_items')
-  const userRatings = await db.all(
-    'SELECT * FROM user_ratings WHERE user_id = ?',
-    [userId]
-  );
-
-  let userScores:{[key: number]: number} = {};
-  userRatings.forEach(rating => {
-    userScores[rating.item_id] = rating.rating;
-  });
+  const menuItems = await db.all('SELECT * FROM menu_items');
+  let userScores:{[key: number]: number} = scores;
 
   /*
-  - User enters budget and scores 
+  - User enters budget and scores
   - User chooses variety preference (could be 3 options, 5, 10 maybe)(could be buttons or a slider)
   - We create as many possible instances of each item (if the budget is $20 and a burrito is $5, we make 4 burrito instances), each with a decreasing score depending on the variety preference 
   - Use 0/1 knapsack to generate most optimal order
@@ -103,21 +68,29 @@ app.get('/optimize/:userId/:budget/:variety', async (req: Request, res: Response
     score: number;
     instance: number;
   }[] = [];
+
+  // Variety function: https://www.desmos.com/calculator/62wnlreoka
+  const scale = 0.1; // somewhere between 0.05 and 1. Just not under 0
   for (const item of menuItems) {
     const userScore = userScores[item.id];
     if(userScore === undefined)
       continue;
-    let numInstaces = Math.floor(budgetNum / item.price);
+    let numInstaces = Math.floor(budget / item.price);
     for (let instance = 1; instance <= numInstaces; instance++){
       const itemCopy = {...item, instance} // keep track of the instance for the backtracking step
-      itemCopy.score = userScore * Math.pow(variety, instance - 1);
+
+      // value = userScore * e ^ (-scale * varietyScore * (instance - 1))
+      itemCopy.score = userScore * Math.pow(Math.E, -scale * variety * (instance - 1));
+      if(itemCopy.score < 0){
+        itemCopy.score = 0;
+      }
       scoredItems.push(itemCopy);
     }
   }
 
   // 0/1 Knapsack algorithm: Table creation
   const numberOfItems = scoredItems.length;
-  const maxPrice = Math.round(budgetNum * 100);
+  const maxPrice = Math.round(budget * 100);
   // Initialize table with 0s
   const table = Array(numberOfItems + 1).fill(0).map(() => Array(maxPrice + 1).fill(0));
 
@@ -168,26 +141,11 @@ app.get('/optimize/:userId/:budget/:variety', async (req: Request, res: Response
     }
   }
 
-  res.send(optimalOrder.reverse())
+  res.send(optimalOrder.reverse());
 });
 
 app.get('/test', async (req: Request, res: Response) => {
   const db = await getDb();
-  const items = await db.all('SELECT * FROM user_ratings');
+  const items = await db.all('SELECT * FROM menu_items');
   res.json({items});
 });
-
-app.put('/user/:userId/rating/:itemId', async (req:Request, res:Response) => {
-  const userId = parseInt(req.params.userId);
-  const itemId = parseInt(req.params.itemId);
-  const rating = req.body.rating;
-  
-  const db = await getDb();
-  await db.run(
-    "INSERT OR REPLACE INTO user_ratings (user_id, item_id, rating)\
-    VALUES (?,?,?)",
-    [userId, itemId, rating]
-  );
-
-  res.json({success:true})
-})
