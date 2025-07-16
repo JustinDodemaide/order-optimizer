@@ -7,14 +7,6 @@ const PORT = 3000;
 
 app.use(express.json());
 
-async function getDb() {
-  return open({
-    filename: './database.db',
-    driver: sqlite3.Database
-  });
-}
-
-
 interface MenuItem {
   id: number;
   name: string;
@@ -23,13 +15,15 @@ interface MenuItem {
   score: number;
 }
 
+async function getDb() {
+  return open({
+    filename: './database/database.db',
+    driver: sqlite3.Database
+  });
+}
 
 app.get('/', (req: Request, res: Response) => {
   res.json({ message: 'Order Optimizer API' });
-});
-
-app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
 });
 
 app.get('/menu', async (req: Request, res: Response) => {
@@ -148,4 +142,8 @@ app.get('/test', async (req: Request, res: Response) => {
   const db = await getDb();
   const items = await db.all('SELECT * FROM menu_items');
   res.json({items});
+});
+
+app.listen(PORT, () => {
+  console.log(`Server running on http://localhost:${PORT}`);
 });

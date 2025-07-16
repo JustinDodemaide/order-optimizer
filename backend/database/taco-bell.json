@@ -1,0 +1,710 @@
+[
+  {
+    "name": "Build Your Own Luxe Cravings Box",
+    "price": 5.99,
+    "calories": 670,
+    "restaurant_id": 1
+  },
+  {
+    "name": "Large Nacho Fries",
+    "price": 3.49,
+    "calories": 470,
+    "restaurant_id": 1
+  },
+  {
+    "name": "Nacho Fries",
+    "price": 2.59,
+    "calories": 330,
+    "restaurant_id": 1
+  },
+  {
+    "name": "Soft Taco",
+    "price": 1.69,
+    "calories": 180,
+    "restaurant_id": 1
+  },
+  {
+    "name": "Crunchy Taco",
+    "price": 1.69,
+    "calories": 170,
+    "restaurant_id": 1
+  },
+  {
+    "name": "Cheesy Gordita Crunch",
+    "price": 5.59,
+    "calories": 490,
+    "restaurant_id": 1
+  },
+  {
+    "name": "Chalupa Supreme",
+    "price": 5.39,
+    "calories": 350,
+    "restaurant_id": 1
+  },
+  {
+    "name": "Cheesy Bean and Rice Burrito",
+    "price": 1.29,
+    "calories": 420,
+    "restaurant_id": 1
+  },
+  {
+    "name": "Chicken Quesadilla",
+    "price": 6.19,
+    "calories": 510,
+    "restaurant_id": 1
+  },
+  {
+    "name": "Spicy Potato Soft Taco",
+    "price": 1.19,
+    "calories": 240,
+    "restaurant_id": 1
+  },
+  {
+    "name": "Crunchwrap Supreme®",
+    "price": 6.19,
+    "calories": 530,
+    "restaurant_id": 1
+  },
+  {
+    "name": "Beefy 5-Layer Burrito",
+    "price": 4.59,
+    "calories": 490,
+    "restaurant_id": 1
+  },
+  {
+    "name": "Nachos BellGrande®",
+    "price": 5.99,
+    "calories": 730,
+    "restaurant_id": 1
+  },
+  {
+    "name": "Cinnamon Twists",
+    "price": 1.49,
+    "calories": 170,
+    "restaurant_id": 1
+  },
+  {
+    "name": "Spicy Ranchero Crispy Chicken Burrito",
+    "price": 5.69,
+    "calories": 650,
+    "restaurant_id": 1
+  },
+  {
+    "name": "Creamy Chipotle Crispy Chicken Burrito",
+    "price": 5.49,
+    "calories": 650,
+    "restaurant_id": 1
+  },
+  {
+    "name": "Avocado Ranch Crispy Chicken Burrito",
+    "price": 5.69,
+    "calories": 660,
+    "restaurant_id": 1
+  },
+  {
+    "name": "Spicy Ranchero Crispy Chicken Taco",
+    "price": 2.79,
+    "calories": 260,
+    "restaurant_id": 1
+  },
+  {
+    "name": "Creamy Chipotle Crispy Chicken Taco",
+    "price": 2.79,
+    "calories": 270,
+    "restaurant_id": 1
+  },
+  {
+    "name": "Avocado Ranch Crispy Chicken Taco",
+    "price": 2.79,
+    "calories": 270,
+    "restaurant_id": 1
+  },
+  {
+    "name": "Discovery Luxe Box",
+    "price": 9,
+    "calories": 1160,
+    "restaurant_id": 1
+  },
+  {
+    "name": "Strawberry Passionfruit Agua Refresca",
+    "price": 3.79,
+    "calories": 170,
+    "restaurant_id": 1
+  },
+  {
+    "name": "Mango Peach Agua Refresca",
+    "price": 3.79,
+    "calories": 170,
+    "restaurant_id": 1
+  },
+  {
+    "name": "Dragonfruit Berry Agua Refresca",
+    "price": 3.79,
+    "calories": 180,
+    "restaurant_id": 1
+  },
+  {
+    "name": "Tropical Punch Rockstar® Energy Refresca",
+    "price": 4.49,
+    "calories": 80,
+    "restaurant_id": 1
+  },
+  {
+    "name": "Pineapple Lime Rockstar® Energy Refresca",
+    "price": 4.49,
+    "calories": 50,
+    "restaurant_id": 1
+  },
+  {
+    "name": "Strawberry Lime Refresca Freeze",
+    "price": 4.19,
+    "calories": 220,
+    "restaurant_id": 1
+  },
+  {
+    "name": "Dragonfruit Freeze",
+    "price": 3.99,
+    "calories": 210,
+    "restaurant_id": 1
+  },
+  {
+    "name": "Crispy Chicken Strips",
+    "price": 3.99,
+    "calories": 680,
+    "restaurant_id": 1
+  },
+  {
+    "name": "Meal for 2",
+    "price": 13.5,
+    "calories": 180,
+    "restaurant_id": 1
+  },
+  {
+    "name": "Cheesy Roll Up",
+    "price": 1.19,
+    "calories": 180,
+    "restaurant_id": 1
+  },
+  {
+    "name": "Double Stacked Taco",
+    "price": 1.99,
+    "calories": 320,
+    "restaurant_id": 1
+  },
+  {
+    "name": "Classic Stacker",
+    "price": 2.19,
+    "calories": 400,
+    "restaurant_id": 1
+  },
+  {
+    "name": "3 Cheese Chicken Flatbread Melt",
+    "price": 2.59,
+    "calories": 330,
+    "restaurant_id": 1
+  },
+  {
+    "name": "Cheesy Fiesta Potatoes",
+    "price": 2.69,
+    "calories": 240,
+    "restaurant_id": 1
+  },
+  {
+    "name": "Chicken Enchilada Burrito",
+    "price": 2.49,
+    "calories": 380,
+    "restaurant_id": 1
+  },
+  {
+    "name": "Cheesy Double Beef Burrito",
+    "price": 2.79,
+    "calories": 560,
+    "restaurant_id": 1
+  },
+  {
+    "name": "Loaded Beef Nachos",
+    "price": 2.99,
+    "calories": 450,
+    "restaurant_id": 1
+  },
+  {
+    "name": "Cantina Chicken Burrito",
+    "price": 6.19,
+    "calories": 590,
+    "restaurant_id": 1
+  },
+  {
+    "name": "Cantina Chicken Soft Taco",
+    "price": 2.99,
+    "calories": 260,
+    "restaurant_id": 1
+  },
+  {
+    "name": "Cantina Chicken Crispy Taco",
+    "price": 2.99,
+    "calories": 330,
+    "restaurant_id": 1
+  },
+  {
+    "name": "Cantina Chicken Quesadilla",
+    "price": 6.49,
+    "calories": 740,
+    "restaurant_id": 1
+  },
+  {
+    "name": "Cantina Chicken Bowl",
+    "price": 7.89,
+    "calories": 530,
+    "restaurant_id": 1
+  },
+  {
+    "name": "Cantina Chicken Crispy Taco Meal",
+    "price": 8.99,
+    "calories": 880,
+    "restaurant_id": 1
+  },
+  {
+    "name": "Cantina Chicken Burrito Meal",
+    "price": 10.69,
+    "calories": 970,
+    "restaurant_id": 1
+  },
+  {
+    "name": "Cantina Chicken Quesadilla Meal",
+    "price": 9.99,
+    "calories": 910,
+    "restaurant_id": 1
+  },
+  {
+    "name": "Classic Luxe Box",
+    "price": 5,
+    "calories": 820,
+    "restaurant_id": 1
+  },
+  {
+    "name": "Supreme Luxe Box",
+    "price": 7,
+    "calories": 1210,
+    "restaurant_id": 1
+  },
+  {
+    "name": "Steak Grilled Cheese Burrito Combo",
+    "price": 9.69,
+    "calories": 860,
+    "restaurant_id": 1
+  },
+  {
+    "name": "Mexican Pizza Combo",
+    "price": 10.99,
+    "calories": 910,
+    "restaurant_id": 1
+  },
+  {
+    "name": "Chicken Quesadilla Combo",
+    "price": 9.59,
+    "calories": 680,
+    "restaurant_id": 1
+  },
+  {
+    "name": "Nachos BellGrande® Combo",
+    "price": 10.59,
+    "calories": 920,
+    "restaurant_id": 1
+  },
+  {
+    "name": "2 Chicken Chalupas Supreme Combo",
+    "price": 12.39,
+    "calories": 830,
+    "restaurant_id": 1
+  },
+  {
+    "name": "Crunchwrap Supreme® Combo",
+    "price": 9.69,
+    "calories": 700,
+    "restaurant_id": 1
+  },
+  {
+    "name": "3 Crunchy Tacos Combo",
+    "price": 7.69,
+    "calories": 500,
+    "restaurant_id": 1
+  },
+  {
+    "name": "3 Crunchy Tacos Supreme® Combo",
+    "price": 9.99,
+    "calories": 560,
+    "restaurant_id": 1
+  },
+  {
+    "name": "3 Doritos® Locos Tacos Combo",
+    "price": 9.79,
+    "calories": 500,
+    "restaurant_id": 1
+  },
+  {
+    "name": "3 Doritos® Locos Tacos Supreme Combo",
+    "price": 10.99,
+    "calories": 560,
+    "restaurant_id": 1
+  },
+  {
+    "name": "3 Soft Tacos Combo",
+    "price": 7.69,
+    "calories": 550,
+    "restaurant_id": 1
+  },
+  {
+    "name": "3 Soft Tacos Supreme® Combo",
+    "price": 9.79,
+    "calories": 610,
+    "restaurant_id": 1
+  },
+  {
+    "name": "Burrito Supreme® Combo",
+    "price": 9.89,
+    "calories": 580,
+    "restaurant_id": 1
+  },
+  {
+    "name": "Soft Taco Supreme®",
+    "price": 2.79,
+    "calories": 200,
+    "restaurant_id": 1
+  },
+  {
+    "name": "Crunchy Taco Supreme®",
+    "price": 2.79,
+    "calories": 190,
+    "restaurant_id": 1
+  },
+  {
+    "name": "Nacho Cheese Doritos® Locos Tacos",
+    "price": 2.89,
+    "calories": 170,
+    "restaurant_id": 1
+  },
+  {
+    "name": "Nacho Cheese Doritos® Locos Tacos Supreme®",
+    "price": 3.39,
+    "calories": 190,
+    "restaurant_id": 1
+  },
+  {
+    "name": "Black Bean Chalupa Supreme",
+    "price": 5.39,
+    "calories": 340,
+    "restaurant_id": 1
+  },
+  {
+    "name": "Doritos® Cheesy Gordita Crunch - Nacho Cheese",
+    "price": 5.89,
+    "calories": 490,
+    "restaurant_id": 1
+  },
+  {
+    "name": "Grilled Cheese Burrito",
+    "price": 5.39,
+    "calories": 710,
+    "restaurant_id": 1
+  },
+  {
+    "name": "Black Bean Grilled Cheese Burrito",
+    "price": 5.39,
+    "calories": 690,
+    "restaurant_id": 1
+  },
+  {
+    "name": "Bean Burrito",
+    "price": 1.79,
+    "calories": 360,
+    "restaurant_id": 1
+  },
+  {
+    "name": "Burrito Supreme®",
+    "price": 5.79,
+    "calories": 390,
+    "restaurant_id": 1
+  },
+  {
+    "name": "Chili Cheese Burrito",
+    "price": 3.39,
+    "calories": 380,
+    "restaurant_id": 1
+  },
+  {
+    "name": "Mexican Pizza",
+    "price": 5.79,
+    "calories": 530,
+    "restaurant_id": 1
+  },
+  {
+    "name": "Veggie Mexican Pizza",
+    "price": 5.69,
+    "calories": 460,
+    "restaurant_id": 1
+  },
+  {
+    "name": "Black Bean Crunchwrap Supreme®",
+    "price": 6.19,
+    "calories": 520,
+    "restaurant_id": 1
+  },
+  {
+    "name": "Mike's Hot Honey™ Diablo Dip Sauce",
+    "price": 0.25,
+    "calories": 45,
+    "restaurant_id": 1
+  },
+  {
+    "name": "Spicy Ranchero Sauce",
+    "price": 0.6,
+    "calories": 220,
+    "restaurant_id": 1
+  },
+  {
+    "name": "Chips and Guacamole",
+    "price": 2.99,
+    "calories": 250,
+    "restaurant_id": 1
+  },
+  {
+    "name": "Chips and Nacho Cheese Sauce",
+    "price": 2.99,
+    "calories": 220,
+    "restaurant_id": 1
+  },
+  {
+    "name": "Black Beans",
+    "price": 1.89,
+    "calories": 50,
+    "restaurant_id": 1
+  },
+  {
+    "name": "Black Beans and Rice",
+    "price": 1.69,
+    "calories": 160,
+    "restaurant_id": 1
+  },
+  {
+    "name": "Pintos N Cheese",
+    "price": 2.59,
+    "calories": 170,
+    "restaurant_id": 1
+  },
+  {
+    "name": "Cinnabon Delights® 2 Pack",
+    "price": 2.29,
+    "calories": 170,
+    "restaurant_id": 1
+  },
+  {
+    "name": "Cinnabon Delights® 12 Pack",
+    "price": 6.99,
+    "calories": 1010,
+    "restaurant_id": 1
+  },
+  {
+    "name": "Avocado Verde Salsa Sauce Packet",
+    "price": 0.2,
+    "calories": 50,
+    "restaurant_id": 1
+  },
+  {
+    "name": "Mild Sauce Packet",
+    "price": 0,
+    "calories": 0,
+    "restaurant_id": 1
+  },
+  {
+    "name": "Hot Sauce Packet",
+    "price": 0,
+    "calories": 0,
+    "restaurant_id": 1
+  },
+  {
+    "name": "Fire Sauce Packet",
+    "price": 0,
+    "calories": 0,
+    "restaurant_id": 1
+  },
+  {
+    "name": "Diablo Sauce Packet",
+    "price": 0,
+    "calories": 0,
+    "restaurant_id": 1
+  },
+  {
+    "name": "Nacho Cheese Sauce",
+    "price": 0.8,
+    "calories": 60,
+    "restaurant_id": 1
+  },
+  {
+    "name": "Reduced-Fat Sour Cream",
+    "price": 0.8,
+    "calories": 35,
+    "restaurant_id": 1
+  },
+  {
+    "name": "Creamy Jalapeño Sauce",
+    "price": 0.45,
+    "calories": 230,
+    "restaurant_id": 1
+  },
+  {
+    "name": "Guacamole",
+    "price": 0.9,
+    "calories": 80,
+    "restaurant_id": 1
+  },
+  {
+    "name": "Chipotle Sauce",
+    "price": 0.45,
+    "calories": 220,
+    "restaurant_id": 1
+  },
+  {
+    "name": "Avocado Ranch Sauce",
+    "price": 0.35,
+    "calories": 240,
+    "restaurant_id": 1
+  },
+  {
+    "name": "Spicy Ranch",
+    "price": 0.35,
+    "calories": 210,
+    "restaurant_id": 1
+  },
+  {
+    "name": "Red Sauce",
+    "price": 0.25,
+    "calories": 15,
+    "restaurant_id": 1
+  },
+  {
+    "name": "Mexican Pizza Sauce",
+    "price": 0.1,
+    "calories": 15,
+    "restaurant_id": 1
+  },
+  {
+    "name": "Steak Quesadilla",
+    "price": 6.39,
+    "calories": 520,
+    "restaurant_id": 1
+  },
+  {
+    "name": "Cheese Quesadilla",
+    "price": 5.19,
+    "calories": 470,
+    "restaurant_id": 1
+  },
+  {
+    "name": "Wild Strawberry Freeze",
+    "price": 3.99,
+    "calories": 190,
+    "restaurant_id": 1
+  },
+  {
+    "name": "Pepsi®",
+    "price": 2.79,
+    "calories": 380,
+    "restaurant_id": 1
+  },
+  {
+    "name": "Diet Pepsi®",
+    "price": 2.79,
+    "calories": 0,
+    "restaurant_id": 1
+  },
+  {
+    "name": "Pepsi® Zero Sugar",
+    "price": 2.79,
+    "calories": 0,
+    "restaurant_id": 1
+  },
+  {
+    "name": "MTN DEW®",
+    "price": 2.79,
+    "calories": 420,
+    "restaurant_id": 1
+  },
+  {
+    "name": "MTN DEW® Zero",
+    "price": 2.79,
+    "calories": 5,
+    "restaurant_id": 1
+  },
+  {
+    "name": "MTN DEW® Baja Blast®",
+    "price": 2.79,
+    "calories": 420,
+    "restaurant_id": 1
+  },
+  {
+    "name": "MTN DEW® Baja Blast™ Zero Sugar",
+    "price": 2.79,
+    "calories": 15,
+    "restaurant_id": 1
+  },
+  {
+    "name": "Dr Pepper®",
+    "price": 2.79,
+    "calories": 360,
+    "restaurant_id": 1
+  },
+  {
+    "name": "Mug® Root Beer",
+    "price": 2.79,
+    "calories": 360,
+    "restaurant_id": 1
+  },
+  {
+    "name": "Starry®",
+    "price": 2.79,
+    "calories": 370,
+    "restaurant_id": 1
+  },
+  {
+    "name": "G2 Gatorade® Fruit Punch",
+    "price": 2.79,
+    "calories": 80,
+    "restaurant_id": 1
+  },
+  {
+    "name": "Tropicana® Original Lemonade",
+    "price": 2.79,
+    "calories": 120,
+    "restaurant_id": 1
+  },
+  {
+    "name": "Brisk® Mango Fiesta",
+    "price": 2.79,
+    "calories": 170,
+    "restaurant_id": 1
+  },
+  {
+    "name": "Lipton® Unsweetened Iced Tea",
+    "price": 2.79,
+    "calories": 0,
+    "restaurant_id": 1
+  },
+  {
+    "name": "Sweet Tea",
+    "price": 2.79,
+    "calories": 470,
+    "restaurant_id": 1
+  },
+  {
+    "name": "Aquafina® Bottled Water",
+    "price": 2.09,
+    "calories": 0,
+    "restaurant_id": 1
+  },
+  {
+    "name": "Veggie Bowl",
+    "price": 7.89,
+    "calories": 410,
+    "restaurant_id": 1
+  }
+]

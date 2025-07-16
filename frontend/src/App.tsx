@@ -130,7 +130,7 @@ function App() {
           />
           <span className="variety-label">
             {variety === 1 ? 'Love duplicates':
-              variety === 2 ? 'Ok with duplicates':
+              variety === 2 ? 'Some duplicates':
               variety === 3 ? 'Neutral':
               variety === 4 ? 'More variety':
               variety === 5 ? 'Max variety' :
