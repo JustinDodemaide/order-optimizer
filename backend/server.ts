@@ -1,11 +1,14 @@
 import express, { Request, Response } from 'express';
 import sqlite3 from 'sqlite3';
 import { open } from 'sqlite';
+import path from 'path'
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
+const DB_PATH = process.env.DATABASE_PATH || './database/database.db';
 
 app.use(express.json());
+app.use(express.static(path.join(__dirname, '../../frontend/build')));
 
 interface MenuItem {
   id: number;
@@ -17,7 +20,7 @@ interface MenuItem {
 
 async function getDb() {
   return open({
-    filename: './database/database.db',
+    filename: DB_PATH,
     driver: sqlite3.Database
   });
 }
@@ -26,13 +29,13 @@ app.get('/', (req: Request, res: Response) => {
   res.json({ message: 'Order Optimizer API' });
 });
 
-app.get('/menu', async (req: Request, res: Response) => {
+app.get('/api/menu', async (req: Request, res: Response) => {
   const db = await getDb();
   const menuItems = await db.all('SELECT * FROM menu_items');
   res.json(menuItems);
 });
 
-app.post('/optimize', async (req: Request, res: Response) => {
+app.post('/api/optimize', async (req: Request, res: Response) => {
   const { budget, variety, scores, restaurantId } = req.body;
   // restaurantId will be implemented later
 
@@ -138,7 +141,7 @@ app.post('/optimize', async (req: Request, res: Response) => {
   res.send(optimalOrder.reverse());
 });
 
-app.get('/test', async (req: Request, res: Response) => {
+app.get('/api/test', async (req: Request, res: Response) => {
   const db = await getDb();
   const items = await db.all('SELECT * FROM menu_items');
   res.json({items});
@@ -146,4 +149,8 @@ app.get('/test', async (req: Request, res: Response) => {
 
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
+});
+
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../../frontend/build', 'index.html'));
 });

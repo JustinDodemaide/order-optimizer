@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './App.css';
 
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:3000';
 
 interface MenuItem {
   id: number;
@@ -22,7 +23,7 @@ function App() {
 
 
   useEffect(() => {
-    axios.get('/menu')
+    axios.get(API_URL + '/menu')
       .then(response => {
         setMenu(response.data);
       })
@@ -47,7 +48,7 @@ function App() {
       restaurantId: restaurantId,
     };
 
-    axios.post('/optimize', payload)
+    axios.post(API_URL + '/optimize', payload)
       .then(response => {
         setOptimalOrder(response.data);
       })
