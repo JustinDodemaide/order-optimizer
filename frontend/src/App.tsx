@@ -22,7 +22,7 @@ function App() {
 
 
   useEffect(() => {
-    axios.get('/menu')
+    axios.get('/api/menu')
       .then(response => {
         setMenu(response.data);
       })
@@ -47,7 +47,7 @@ function App() {
       restaurantId: restaurantId,
     };
 
-    axios.post('/optimize', payload)
+    axios.post('/api/optimize', payload)
       .then(response => {
         setOptimalOrder(response.data);
       })
