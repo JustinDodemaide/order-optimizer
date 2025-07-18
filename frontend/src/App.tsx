@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './App.css';
 
-const API_URL = '/api';
+const API_URL = '/api'
 
 interface MenuItem {
   id: number;
@@ -25,7 +25,12 @@ function App() {
   useEffect(() => {
     axios.get(API_URL + '/menu')
       .then(response => {
-        setMenu(response.data);
+        // convert price to a number
+        const menuWithNumericPrices = response.data.map((item: any) => ({
+          ...item,
+          price: parseFloat(item.price)
+        }));
+        setMenu(menuWithNumericPrices);
       })
       .catch(error => {
         console.error('Error fetching menu:', error);
