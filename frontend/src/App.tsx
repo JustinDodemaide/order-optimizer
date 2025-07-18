@@ -55,11 +55,13 @@ function App() {
 
     axios.post(API_URL + '/optimize', payload)
       .then(response => {
-        setOptimalOrder(response.data);
-      })
-      .catch(error => {
-        console.error('Error optimizing order:', error);
-      });
+        // convert price to a number
+        const orderWithNumericPrices = response.data.map((item: any) => ({
+          ...item,
+          price: parseFloat(item.price),
+        }));
+        setOptimalOrder(orderWithNumericPrices);
+    })
   };
 
 
