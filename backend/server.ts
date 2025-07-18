@@ -1,11 +1,17 @@
 import express, { Request, Response } from 'express';
-import sqlite3 from 'sqlite3';
-import { open } from 'sqlite';
+import {Client} from 'pg';
 import path from 'path'
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-const DB_PATH = process.env.DATABASE_PATH || './database/database.db';
+
+const client = new Client({
+  connectionString: process.env.DATABASE_URL,
+  ssl:{
+    rejectUnauthorized:false
+  }
+});
+
 
 app.use(express.json());
 app.use(express.static(path.join(__dirname, '../../frontend/build')));
@@ -18,21 +24,23 @@ interface MenuItem {
   score: number;
 }
 
-async function getDb() {
-  return open({
-    filename: DB_PATH,
-    driver: sqlite3.Database
-  });
-}
+client.connect()
+  .then(() => console.log('Connected to PostgreSQL'))
+  .catch(err => console.error('Connection error', err.stack));
+
 
 app.get('/', (req: Request, res: Response) => {
   res.json({ message: 'Order Optimizer API' });
 });
 
 app.get('/api/menu', async (req: Request, res: Response) => {
-  const db = await getDb();
-  const menuItems = await db.all('SELECT * FROM menu_items');
-  res.json(menuItems);
+  try{
+    const result = await client.query('SELECT * FROM menu_items');
+    res.json(result.rows);
+  }
+  catch(err){
+    res.status(500).json({error:'Database error'});
+  }
 });
 
 app.post('/api/optimize', async (req: Request, res: Response) => {
@@ -46,8 +54,8 @@ app.post('/api/optimize', async (req: Request, res: Response) => {
     res.status(400).json({ error: 'Budget is too high' });
   }
 
-  const db = await getDb();
-  const menuItems = await db.all('SELECT * FROM menu_items');
+  const result = await client.query('SELECT * FROM menu_items');
+  const menuItems = result.rows;
   let userScores:{[key: number]: number} = scores;
 
   /*
@@ -142,9 +150,13 @@ app.post('/api/optimize', async (req: Request, res: Response) => {
 });
 
 app.get('/api/test', async (req: Request, res: Response) => {
-  const db = await getDb();
-  const items = await db.all('SELECT * FROM menu_items');
-  res.json({items});
+  try {
+    const result = await client.query('SELECT * FROM menu_items');
+    res.json({ items: result.rows });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Database error' });
+  }
 });
 
 app.listen(PORT, () => {

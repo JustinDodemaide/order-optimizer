@@ -1,35 +1,46 @@
-import sqlite3 from 'sqlite3';
-import { open } from 'sqlite';
+import { Client } from 'pg';
+import fs from 'fs';
+import path from 'path';
 
-async function setupDatabase() {
-  const db = await open({
-    filename: './database.db',
-    driver: sqlite3.Database
+async function migrateToPostgres() {
+  const client = new Client({
+    connectionString: process.env.DATABASE_URL,
+    ssl: {
+      rejectUnauthorized: false
+    }
   });
 
-  await db.exec(`
-    CREATE TABLE IF NOT EXISTS users (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      username TEXT UNIQUE NOT NULL
-    );
+  await client.connect();
 
+  await client.query(`
     CREATE TABLE IF NOT EXISTS menu_items (
-      id INTEGER PRIMARY KEY,
-      restaurant_id INTEGER,
+      id SERIAL PRIMARY KEY,
       name TEXT NOT NULL,
-      price REAL NOT NULL,
-      calories INTEGER
-    );
-
-    CREATE TABLE IF NOT EXISTS user_ratings (
-      user_id INTEGER,
-      item_id INTEGER,
-      rating INTEGER,
-      PRIMARY KEY (user_id, item_id)
+      price DECIMAL(10,2) NOT NULL,
+      calories INTEGER NOT NULL,
+      restaurant_id INTEGER NOT NULL
     );
   `);
 
-  console.log('complete');
+  // clear existing entires
+  await client.query('TRUNCATE TABLE menu_items RESTART IDENTITY');
+
+  // Load from file and insert entries
+  const dataPath = path.join(__dirname, 'taco-bell.json');
+  const fileContents = fs.readFileSync(dataPath, 'utf8');
+  const menuData = JSON.parse(fileContents);
+
+  for (const item of menuData) {
+    await client.query(
+      'INSERT INTO menu_items (name, price, calories, restaurant_id) VALUES ($1, $2, $3, $4)',
+      [item.name, item.price, item.calories, item.restaurant_id]
+    );
+  }
+
+  await client.end();
 }
 
-setupDatabase();
+migrateToPostgres().catch(err => {
+  console.error(err);
+  process.exit(1);
+});
