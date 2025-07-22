@@ -44,19 +44,17 @@ app.get('/api/menu', async (req: Request, res: Response) => {
 });
 
 app.post('/api/optimize', async (req: Request, res: Response) => {
+  console.log("AHHHHHHHHHHHH");
+  
   const { budget, variety, scores, restaurantId } = req.body;
-  // restaurantId will be implemented later
+  // budget is passed in as float, in dollars
+  const budgetInCents = Math.round(budget * 100);
+  console.log(budgetInCents);
 
-  //const varietyDecayMap = [1.0, 0.85, 0.7, 0.55, 0.4];
-  //const variety = varietyDecayMap[varietyIndex - 1];
-
-  if (budget > 2500) {
+  if (budget > 25000) {
     res.status(400).json({ error: 'Budget is too high' });
+    return;
   }
-
-  const result = await client.query('SELECT * FROM menu_items');
-  const menuItems = result.rows;
-  let userScores:{[key: number]: number} = scores;
 
   /*
   - User enters budget and scores
@@ -64,28 +62,33 @@ app.post('/api/optimize', async (req: Request, res: Response) => {
   - We create as many possible instances of each item (if the budget is $20 and a burrito is $5, we make 4 burrito instances), each with a decreasing score depending on the variety preference 
   - Use 0/1 knapsack to generate most optimal order
   */
+  
+   // Variety function: https://www.desmos.com/calculator/62wnlreoka
+  const varietyScale = 0.1; // somewhere between 0.05 and 1. Just not under 0
 
   // Add user scores to the menu items
   const scoredItems: {
     id: number;
     name: string;
-    price: number;
+    price: number; // stored as cents
     score: number;
     instance: number;
   }[] = [];
 
-  // Variety function: https://www.desmos.com/calculator/62wnlreoka
-  const scale = 0.1; // somewhere between 0.05 and 1. Just not under 0
+  const result = await client.query('SELECT * FROM menu_items');
+  const menuItems = result.rows;
   for (const item of menuItems) {
-    const userScore = userScores[item.id];
+    const userScore = scores[item.id];
     if(userScore === undefined)
       continue;
-    let numInstaces = Math.floor(budget / item.price);
-    for (let instance = 1; instance <= numInstaces; instance++){
+    const itemPriceInCents = Math.round(item.price * 100);
+    let numInstances = Math.floor(budgetInCents / itemPriceInCents);
+    for (let instance = 1; instance <= numInstances; instance++){ // starting at instance 1 means the original item is included in scoredItems
       const itemCopy = {...item, instance} // keep track of the instance for the backtracking step
 
       // value = userScore * e ^ (-scale * varietyScore * (instance - 1))
-      itemCopy.score = userScore * Math.pow(Math.E, -scale * variety * (instance - 1));
+      itemCopy.score = Math.round(userScore * Math.pow(Math.E, -varietyScale * variety * (instance - 1)));
+      itemCopy.price = itemPriceInCents;
       if(itemCopy.score < 0){
         itemCopy.score = 0;
       }
@@ -95,14 +98,14 @@ app.post('/api/optimize', async (req: Request, res: Response) => {
 
   // 0/1 Knapsack algorithm: Table creation
   const numberOfItems = scoredItems.length;
-  const maxPrice = Math.round(budget * 100);
+  const maxPrice = budgetInCents;
   // Initialize table with 0s
   const table = Array(numberOfItems + 1).fill(0).map(() => Array(maxPrice + 1).fill(0));
 
   // Iterate through each item
   for(let itemIndex = 1; itemIndex <= numberOfItems; itemIndex++){
     const currentItem = scoredItems[itemIndex - 1];
-    const itemPrice = Math.round(currentItem.price * 100);
+    const itemPrice = currentItem.price; // scoredItems are stored as cents
     const itemScore = currentItem.score;
     
     // Iterate through each possible budget amount
@@ -124,30 +127,34 @@ app.post('/api/optimize', async (req: Request, res: Response) => {
     }
   }
 
-  // Best score is in the bottom right of the table
   const maxScore = table[numberOfItems][maxPrice];
   
   const optimalOrder = [];
-  let currentScore = maxScore;
-  let currentBudget = maxPrice;
+  let remainingBudget = maxPrice;
 
-  // Start from the max (bottom right) and work backwards
-  for(let row = numberOfItems; row > 0 && currentScore > 0; row--){
-    // If the score in the cell above is the same as the current cell, it means the current item was not included
-    if(currentScore === table[row - 1][currentBudget])
-      continue;
-    else{
-      const chosenItem = scoredItems[row - 1];
-      optimalOrder.push(chosenItem);
+  for (let i = numberOfItems; i > 0 && remainingBudget > 0; i--) {
+    const scoreWithItem = table[i][remainingBudget];
+    const scoreWithoutItem = table[i - 1][remainingBudget];
 
-      // Subtract the item's score and cost find the state of the table before this item was added
-      currentScore -= chosenItem.score;
-      currentBudget -= Math.round(chosenItem.price * 100);
+    if (scoreWithItem !== scoreWithoutItem) {
+      const chosenItem = scoredItems[i - 1];
+
+      if (chosenItem.price <= remainingBudget) {
+        optimalOrder.push(chosenItem);
+        remainingBudget -= chosenItem.price;
+      }
     }
   }
 
-  res.send(optimalOrder.reverse());
+  // Convert prices from cents back to dollars
+  const finalOrder = optimalOrder.map(item => ({
+    ...item,
+    price: item.price / 100,
+  }));
+
+  res.send(finalOrder.reverse());
 });
+
 
 app.get('/api/test', async (req: Request, res: Response) => {
   try {

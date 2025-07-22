@@ -45,7 +45,7 @@ function App() {
 
 
   const optimizeOrder = () => {
-    // Prepare the data for the POST request
+    // Prepare the data for the post request
     const payload = {
       budget: parseFloat(budget),
       variety: variety,
@@ -66,12 +66,12 @@ function App() {
 
 
 
-  // Search functionality
+  // search functionality
   const filteredMenu = menu.filter(item =>
     item.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  // Determine the CSS class for a menu item based on its rating
+  // determine the CSS class for a menu item based on its rating (green or grey)
   const getRatingClass = (itemId: number) => {
     return ratings[itemId] === 1 ? 'liked' : '';
   };
