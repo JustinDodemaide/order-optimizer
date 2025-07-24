@@ -78,6 +78,13 @@ function App() {
 
   return (
     <div className="App">
+      {/* Add the lava lamp elements here, as a background */}
+      <div className="lava-lamp">
+        <div className="blob blob-1"></div>
+        <div className="blob blob-2"></div>
+        <div className="blob blob-3"></div>
+      </div>
+
       <div className="container">
         <h1>Order Optimizer</h1>
 
