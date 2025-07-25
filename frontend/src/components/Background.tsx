@@ -1,71 +1,80 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import Particles from "react-tsparticles";
-import { loadFull } from "tsparticles";
-import type { Container, Engine } from "tsparticles-engine";
+import type { Engine } from "tsparticles-engine";
+import { loadSlim } from "tsparticles-slim";
 
-const Background: React.FC = () => {
-  const particlesInit = useCallback(async (engine: Engine) => {
-    await loadFull(engine);
+interface ParticleBackgroundProps {
+  isOptimizing: boolean;
+}
+
+const ParticleBackground: React.FC<ParticleBackgroundProps> = ({ isOptimizing }) => {
+  const particleOptions = useMemo(() => ({
+    background: {
+      color: {
+        value: '#1a1a2e',
+      },
+    },
+    fpsLimit: 60,
+    interactivity: {
+      events: {
+        onHover: {
+          enable: true,
+          mode: 'repulse',
+        },
+      },
+      modes: {
+        repulse: {
+          distance: 100,
+          duration: 0.4,
+        },
+      },
+    },
+    particles: {
+      color: {
+        value: '#ffffff',
+      },
+      links: {
+        color: '#ffffff',
+        distance: 150,
+        enable: true,
+        opacity: 0.5,
+        width: 1,
+      },
+      move: {
+        direction: 'none' as const,
+        enable: true,
+        outModes: {
+          default: 'bounce' as const,
+        },
+        random: false,
+        speed: isOptimizing ? 12 : 3, // Dynamic speed
+        straight: false,
+      },
+      number: {
+        density: {
+          enable: true,
+        },
+        value: 80,
+      },
+      opacity: {
+        value: 0.5,
+      },
+      shape: {
+        type: 'circle' as const,
+      },
+      size: {
+        value: { min: 1, max: isOptimizing ? 8 : 4 }, // Dynamic size
+      },
+    },
+    detectRetina: true,
+  }), [isOptimizing]);
+
+  // useCallback to ensure the function is not recreated on every render
+  const customInit = useCallback(async (engine: Engine) => {
+    await loadSlim(engine);
   }, []);
 
-  const particlesLoaded = useCallback(async (container: Container | undefined) => {
-    // Can access particle container here if needed
-  }, []);
-
-  return (
-    <Particles
-      id="tsparticles"
-      init={particlesInit}
-      loaded={particlesLoaded}
-      options={{
-        background: {
-          color: {
-            value: "#000000",
-          },
-        },
-        fpsLimit: 120,
-        particles: {
-          color: {
-            value: ["#702082", "#E7248F"], // Taco Bell colors
-          },
-          links: {
-            color: "#702082",
-            distance: 150,
-            enable: true,
-            opacity: 0.3,
-            width: 1,
-          },
-          move: {
-            enable: true,
-            speed: 1,
-            direction: "none",
-            random: false,
-            straight: false,
-            outModes: {
-              default: "bounce",
-            },
-          },
-          number: {
-            density: {
-              enable: true,
-              area: 800,
-            },
-            value: 60,
-          },
-          opacity: {
-            value: 0.5,
-          },
-          shape: {
-            type: "circle",
-          },
-          size: {
-            value: { min: 1, max: 3 },
-          },
-        },
-        detectRetina: true,
-      }}
-    />
-  );
+  return <Particles id="tsparticles" init={customInit} options={particleOptions} />;
 };
 
-export default Background;
+export default ParticleBackground;

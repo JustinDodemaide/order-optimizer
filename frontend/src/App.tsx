@@ -7,6 +7,9 @@ import MenuSection from './components/MenuSection.tsx';
 import VarietySlider from './components/VarietySlider.tsx';
 import ResultsDisplay from './components/ResultsDisplay.tsx';
 
+import Background from './components/Background.tsx';
+
+
 const API_URL = '/api'
 
 interface MenuItem {
@@ -25,6 +28,7 @@ function App() {
   const [optimalOrder, setOptimalOrder] = useState<MenuItem[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [restaurantId] = useState(1); // hardcoded until multiple menus are added
+  const [isOptimizing, setIsOptimizing] = useState(false);
 
 
   useEffect(() => {
@@ -52,6 +56,8 @@ function App() {
 
   const optimizeOrder = () => {
     // Prepare the data for the post request
+    setIsOptimizing(true); // starts background animation
+
     const payload = {
       budget: parseFloat(budget),
       variety: variety,
@@ -70,6 +76,9 @@ function App() {
     })
     .catch(error => {
       console.error('Error optimizing order ', error);
+    })
+    .finally(() => {
+      setIsOptimizing(false);
     });
   };
 
@@ -83,12 +92,8 @@ function App() {
 
   return (
     <div className="App">
-      {/* Add the lava lamp elements here, as a background */}
-      <div className="lava-lamp">
-        <div className="blob blob-1"></div>
-        <div className="blob blob-2"></div>
-        <div className="blob blob-3"></div>
-      </div>
+
+      <Background isOptimizing={isOptimizing} />
 
       <div className="container">
         <h1>Order Optimizer</h1>
