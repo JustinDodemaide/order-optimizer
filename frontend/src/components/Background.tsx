@@ -11,10 +11,11 @@ const ParticleBackground: React.FC<ParticleBackgroundProps> = ({ isOptimizing })
   const particleOptions = useMemo(() => ({
     background: {
       color: {
-        value: '#1a1a2e',
+        value: '#000000ff',
       },
     },
     fpsLimit: 60,
+    /*
     interactivity: {
       events: {
         onHover: {
@@ -29,41 +30,54 @@ const ParticleBackground: React.FC<ParticleBackgroundProps> = ({ isOptimizing })
         },
       },
     },
+    */
     particles: {
       color: {
-        value: '#ffffff',
-      },
-      links: {
-        color: '#ffffff',
-        distance: 150,
-        enable: true,
-        opacity: 0.5,
-        width: 1,
+        value: ['#702082', '#E7248F', '#3B2B4B'],
       },
       move: {
         direction: 'none' as const,
         enable: true,
         outModes: {
-          default: 'bounce' as const,
+          default: 'out' as const,
         },
-        random: false,
-        speed: isOptimizing ? 12 : 3, // Dynamic speed
+        random: true,
+        speed: 2,//isOptimizing ? 4 : 1,
         straight: false,
       },
       number: {
         density: {
           enable: true,
         },
-        value: 80,
+        value: 40,
       },
       opacity: {
-        value: 0.5,
+        value: 0.6,
+        animation: {
+          enabled: true,
+          speed: 1,
+          minimumValue: 0.3,
+          sync: false
+        }
       },
       shape: {
         type: 'circle' as const,
       },
       size: {
-        value: { min: 1, max: isOptimizing ? 8 : 4 }, // Dynamic size
+        value: { min: 50, max: 150 },
+        animation: {
+          enable: true,
+          speed: 3,
+          minimumValue: 50,
+          sync: false,
+        },
+      },
+      shadow:{
+        blur:100,
+        color: {
+          value:'#E7248F',
+        },
+        enable:true
       },
     },
     detectRetina: true,
