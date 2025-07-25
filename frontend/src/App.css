@@ -5,33 +5,42 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  /* The body background is no longer needed as .App now covers the screen */
 }
 
 .App {
-  /* Original styles for centering content */
   min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
   padding: 20px;
-  
-  /* New styles for the lava lamp background */
   background: #000;
   position: relative;
   overflow: hidden;
 }
 
+.App::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  box-shadow: inset 0 0 150px #000;
+  z-index: 2;
+  pointer-events: none;
+}
+
 .container {
-  background: white;
+  background: rgba(255, 255, 255, 0.9);
   border: 3px solid #000;
   border-radius: 20px;
   padding: 30px;
   max-width: 600px;
   width: 100%;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  /* Ensure the container is on top of the background effect */
   z-index: 1;
+  position: relative;
+  z-index: 3;
 }
 
 h1 {
@@ -221,50 +230,34 @@ h1 {
   background: #555;
 }
 
-/* --- LAVA LAMP STYLES --- */
-.lava-lamp {
-  position: absolute; /* Changed from fixed to work within the .App container */
+
+
+.particle-container {
+  position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  z-index: 0; /* Positioned behind the .container */
+  filter: blur(10px) contrast(3);
+  z-index: 1;
 }
 
-.blob {
+.particle-container::after {
+  content: '';
   position: absolute;
-  border-radius: 50%;
-  filter: blur(40px);
-  mix-blend-mode: screen;
-  animation: float 20s infinite ease-in-out;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(ellipse at 50% 40%, 
+    rgba(255,255,255,0.15) 0%, 
+    transparent 50%);
+  mix-blend-mode: soft-light;
+  pointer-events: none;
 }
 
-.blob-1 {
-  width: 400px;
-  height: 400px;
-  background: #702082; /* Taco Bell Purple */
-  top: -100px;
-  left: -100px;
-  animation-delay: 0s;
-}
 
-.blob-2 {
-  width: 300px;
-  height: 300px;
-  background: #E7248F; /* Taco Bell Pink */
-  bottom: -100px;
-  right: -100px;
-  animation-delay: 5s;
-}
 
-.blob-3 {
-  width: 350px;
-  height: 350px;
-  background: #702082;
-  top: 50%;
-  left: 50%;
-  animation-delay: 10s;
-}
 
 @keyframes float {
   0%, 100% { transform: translate(0, 0) scale(1); }

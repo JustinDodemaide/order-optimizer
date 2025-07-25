@@ -49,7 +49,7 @@ const ParticleBackground: React.FC<ParticleBackgroundProps> = ({ isOptimizing })
         density: {
           enable: true,
         },
-        value: 40,
+        value: 60,
       },
       opacity: {
         value: 0.6,
@@ -64,7 +64,7 @@ const ParticleBackground: React.FC<ParticleBackgroundProps> = ({ isOptimizing })
         type: 'circle' as const,
       },
       size: {
-        value: { min: 50, max: 150 },
+        value: { min: 80, max: 130 },
         animation: {
           enable: true,
           speed: 3,
@@ -88,7 +88,11 @@ const ParticleBackground: React.FC<ParticleBackgroundProps> = ({ isOptimizing })
     await loadSlim(engine);
   }, []);
 
-  return <Particles id="tsparticles" init={customInit} options={particleOptions} />;
+  return (
+    <div className="particle-container">
+      <Particles id="tsparticles" init={customInit} options={particleOptions} />
+    </div>
+  );
 };
 
 export default ParticleBackground;
