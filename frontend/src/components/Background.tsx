@@ -1,30 +1,71 @@
+import React, { useCallback } from 'react';
 import Particles from "react-tsparticles";
 import { loadFull } from "tsparticles";
-import { useSpring, animated } from '@react-spring/web';
+import type { Container, Engine } from "tsparticles-engine";
 
-const AnimatedParticles = ({ isGenerating }: { isGenerating: boolean }) => {
-  // Morph particle behavior based on state
-  const springProps = useSpring({
-    particleSpeed: isGenerating ? 5 : 1,
-    particleSize: isGenerating ? 4 : 2,
-    config: { tension: 100, friction: 20 }
-  });
+const Background: React.FC = () => {
+  const particlesInit = useCallback(async (engine: Engine) => {
+    await loadFull(engine);
+  }, []);
 
-  const particlesInit = async (main: any) => {
-    await loadFull(main);
-  };
+  const particlesLoaded = useCallback(async (container: Container | undefined) => {
+    // Can access particle container here if needed
+  }, []);
 
   return (
     <Particles
+      id="tsparticles"
       init={particlesInit}
+      loaded={particlesLoaded}
       options={{
+        background: {
+          color: {
+            value: "#000000",
+          },
+        },
+        fpsLimit: 120,
         particles: {
-          color: { value: ["#702082", "#E7248F"] },
-          move: { speed: springProps.particleSpeed },
-          size: { value: springProps.particleSize },
-          // More config...
-        }
+          color: {
+            value: ["#702082", "#E7248F"], // Taco Bell colors
+          },
+          links: {
+            color: "#702082",
+            distance: 150,
+            enable: true,
+            opacity: 0.3,
+            width: 1,
+          },
+          move: {
+            enable: true,
+            speed: 1,
+            direction: "none",
+            random: false,
+            straight: false,
+            outModes: {
+              default: "bounce",
+            },
+          },
+          number: {
+            density: {
+              enable: true,
+              area: 800,
+            },
+            value: 60,
+          },
+          opacity: {
+            value: 0.5,
+          },
+          shape: {
+            type: "circle",
+          },
+          size: {
+            value: { min: 1, max: 3 },
+          },
+        },
+        detectRetina: true,
       }}
     />
   );
 };
+
+export default Background;
