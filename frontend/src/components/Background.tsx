@@ -14,8 +14,8 @@ const ParticleBackground: React.FC<ParticleBackgroundProps> = ({ isOptimizing })
         value: '#000000ff',
       },
     },
-    fpsLimit: 60,
-    /*
+    fpsLimit: 30,
+    
     interactivity: {
       events: {
         onHover: {
@@ -26,14 +26,14 @@ const ParticleBackground: React.FC<ParticleBackgroundProps> = ({ isOptimizing })
       modes: {
         repulse: {
           distance: 100,
-          duration: 0.4,
+          duration: 1.6,
         },
       },
     },
-    */
+    
     particles: {
       color: {
-        value: ['#702082', '#E7248F', '#3B2B4B'],
+        value: ['#c010e8ff', '#b82074ff', '#A93EFF'],
       },
       move: {
         direction: 'none' as const,
@@ -51,31 +51,22 @@ const ParticleBackground: React.FC<ParticleBackgroundProps> = ({ isOptimizing })
         },
         value: 60,
       },
-      opacity: {
-        value: 0.6,
-        animation: {
-          enabled: true,
-          speed: 1,
-          minimumValue: 0.3,
-          sync: false
-        }
-      },
+      
       shape: {
         type: 'circle' as const,
       },
       size: {
-        value: { min: 80, max: 130 },
+        value: {min: 60, max: 140},
         animation: {
           enable: true,
-          speed: 3,
-          minimumValue: 50,
+          speed: 4,
           sync: false,
         },
       },
       shadow:{
         blur:100,
         color: {
-          value:'#E7248F',
+          value:'#e40c83ff',
         },
         enable:true
       },

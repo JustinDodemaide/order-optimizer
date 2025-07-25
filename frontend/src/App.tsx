@@ -8,7 +8,7 @@ import VarietySlider from './components/VarietySlider.tsx';
 import ResultsDisplay from './components/ResultsDisplay.tsx';
 
 import Background from './components/Background.tsx';
-
+import StretchCompressFilter from './components/StretchCompressFilter.tsx';
 
 const API_URL = '/api'
 
@@ -93,6 +93,7 @@ function App() {
   return (
     <div className="App">
 
+      <StretchCompressFilter />
       <Background isOptimizing={isOptimizing} />
 
       <div className="container">
