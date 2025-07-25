@@ -2,6 +2,11 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './App.css';
 
+import BudgetEnterer from './components/BudgetEnterer.tsx';
+import MenuSection from './components/MenuSection.tsx';
+import VarietySlider from './components/VarietySlider.tsx';
+import ResultsDisplay from './components/ResultsDisplay.tsx';
+
 const API_URL = '/api'
 
 interface MenuItem {
@@ -17,7 +22,7 @@ function App() {
   const [budget, setBudget] = useState<string>('20');
   const [ratings, setRatings] = useState<{ [key: number]: number }>({});
   const [variety, setVariety] = useState<number>(3);
-  const [optimalOrder, setOptimalOrder] = useState<any[]>([]);
+  const [optimalOrder, setOptimalOrder] = useState<MenuItem[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [restaurantId] = useState(1); // hardcoded until multiple menus are added
 
@@ -38,8 +43,9 @@ function App() {
   }, []);
 
 
-  const handleRating = (itemId: number, currentRating: number) => {
-    const newRating = currentRating === 1 ? 0.1 : 1; // Toggle between 0 and 1
+  const handleRating = (itemId: number) => {
+    const currentRating = ratings[itemId] || 0;
+    const newRating = currentRating === 1 ? 0.1 : 1;
     setRatings({ ...ratings, [itemId]: newRating });
   };
 
@@ -62,6 +68,9 @@ function App() {
         }));
         setOptimalOrder(orderWithNumericPrices);
     })
+    .catch(error => {
+      console.error('Error optimizing order ', error);
+    });
   };
 
 
@@ -71,10 +80,6 @@ function App() {
     item.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  // determine the CSS class for a menu item based on its rating (green or grey)
-  const getRatingClass = (itemId: number) => {
-    return ratings[itemId] === 1 ? 'liked' : '';
-  };
 
   return (
     <div className="App">
@@ -93,82 +98,18 @@ function App() {
           then generate your optimal order!
         </div>
 
-        <div className="budget-section">
-          <label>Budget: $</label>
-          <input
-            type="number"
-            value={budget}
-            onChange={(e) => setBudget(e.target.value)}
-            min="1"
-            step="0.01"
-          />
-        </div>
+        <BudgetEnterer budget={budget} setBudget={setBudget} />
 
-        <div className="menu-section">
-          <div className="menu-header">
-            <h2>Menu</h2>
-            <input
-              type="text"
-              placeholder="Search..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="search-input"
-            />
-          </div>
+        <MenuSection menuItems={filteredMenu} ratings={ratings} searchTerm={searchTerm} onSearchChange={setSearchTerm} onRateItem={handleRating}/>
 
-          <div className="menu-items">
-            {filteredMenu.map(item => (
-              <div key={item.id} className={`menu-item ${getRatingClass(item.id)}`}>
-                <span className="item-name">{item.name} - ${item.price.toFixed(2)}</span>
-                <div className="rating-buttons">
-                  <button
-                    className={`thumb-up ${ratings[item.id] === 1 ? 'active' : ''}`}
-                    onClick={() => handleRating(item.id, ratings[item.id] || 0)}
-                  >
-                    👍
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
+        <VarietySlider variety={variety} setVariety={setVariety} />
 
-        <div className="variety-section">
-          <label>Variety: </label>
-          <input
-            type="range"
-            min="1"
-            max="5"
-            value={variety}
-            onChange={(e) => setVariety(parseInt(e.target.value))}
-            className="variety-slider"
-          />
-          <span className="variety-label">
-            {variety === 1 ? 'Love duplicates':
-              variety === 2 ? 'Some duplicates':
-              variety === 3 ? 'Neutral':
-              variety === 4 ? 'More variety':
-              variety === 5 ? 'Max variety' :
-                ''}
-          </span>
-        </div>
 
         <button className="generate-button" onClick={optimizeOrder}>
           Generate
         </button>
 
-        {optimalOrder.length > 0 && (
-          <div className="results-section">
-            {optimalOrder.map((item, index) => (
-              <span key={index} className="result-item">
-                {item.name}{index < optimalOrder.length - 1 ? ', ' : ''}
-              </span>
-            ))}
-            <div className="total-price">
-              Total: ${optimalOrder.reduce((sum, item) => sum + item.price, 0).toFixed(2)}
-            </div>
-          </div>
-        )}
+        <ResultsDisplay order={optimalOrder} />
       </div>
     </div>
   );
