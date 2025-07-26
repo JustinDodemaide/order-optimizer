@@ -111,7 +111,7 @@ function App() {
         <VarietySlider variety={variety} setVariety={setVariety} />
 
 
-        <button className="generate-button" onClick={optimizeOrder}>
+        <button className="generate-button glass" onClick={optimizeOrder}>
           Generate
         </button>
 

@@ -17,7 +17,7 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ order }) => {
   const totalPrice = order.reduce((sum, item) => sum + item.price, 0);
 
   return (
-    <div className="results-section">
+    <div className="results-section glass">
       {order.map((item, index) => (
         <span key={index} className="result-item">
           {item.name}{index < order.length - 1 ? ', ' : ''}

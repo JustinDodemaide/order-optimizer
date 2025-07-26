@@ -8,7 +8,7 @@ interface BudgetControlProps {
 
 const BudgetControl: React.FC<BudgetControlProps> = ({ budget, setBudget }) => {
   return (
-    <div className="budget-section">
+    <div className="budget-section glass">
       <label>Budget: $</label>
       <input
         type="number"
