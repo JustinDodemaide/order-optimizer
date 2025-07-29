@@ -9,7 +9,7 @@ interface ResultsDisplayProps {
   order: OrderItem[];
 }
 
-const ResultsDisplay:React.FC<ResultsDisplayProps> = ({ order }) => {
+const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ order }) => {
   if (order.length === 0) {
     return null;
   }
