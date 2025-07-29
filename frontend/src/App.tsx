@@ -2,116 +2,90 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './App.css';
 
+import { useOrderOptimizer } from './useOrderOptimizer.ts';
+
 import BudgetEnterer from './components/BudgetEnterer.tsx';
 import MenuSection from './components/MenuSection.tsx';
 import VarietySlider from './components/VarietySlider.tsx';
 import ResultsDisplay from './components/ResultsDisplay.tsx';
-
 import Background from './components/Background.tsx';
 import StretchCompressFilter from './components/StretchCompressFilter.tsx';
 
-const API_URL = '/api'
+const API_URL = '/api';
 
-interface MenuItem {
-  id: number;
-  name: string;
-  price: number;
-  calories: number;
-  restaurant_id: number;
-}
-
-function App() {
-  const [menu, setMenu] = useState<MenuItem[]>([]);
-  const [budget, setBudget] = useState<string>('20');
+function App():JSX.Element {
+  const [menu, setMenu] = useState<any[]>([]);
+  const [budget, setBudget] = useState('20');
   const [ratings, setRatings] = useState<{ [key: number]: number }>({});
-  const [variety, setVariety] = useState<number>(3);
-  const [optimalOrder, setOptimalOrder] = useState<MenuItem[]>([]);
+  const [variety, setVariety] = useState(3);
   const [searchTerm, setSearchTerm] = useState('');
-  const [restaurantId] = useState(1); // hardcoded until multiple menus are added
-  const [isOptimizing, setIsOptimizing] = useState(false);
+  const [restaurantId] = useState(1);
 
+  const optimizerData = useOrderOptimizer();
+  const optimalOrder = optimizerData.optimalOrder;
+  const animationClass = optimizerData.animationClass;
+  const optimizeOrder = optimizerData.optimizeOrder;
 
   useEffect(() => {
-    axios.get(API_URL + '/menu')
-      .then(response => {
-        // convert price to a number
-        const menuWithNumericPrices = response.data.map((item: any) => ({
-          ...item,
-          price: parseFloat(item.price)
-        }));
+    async function fetchMenu() {
+      try {
+        const response = await axios.get(`${API_URL}/menu`);
+        
+        const menuWithNumericPrices = response.data.map((item: any) => ({...item, price: parseFloat(item.price),}));
         setMenu(menuWithNumericPrices);
-      })
-      .catch(error => {
+      } catch (error) {
         console.error('Error fetching menu:', error);
-      });
+      }
+    }
+
+    fetchMenu();
   }, []);
 
-
-  const handleRating = (itemId: number) => {
+  function handleRating(itemId: number) {
     const currentRating = ratings[itemId] || 0;
     const newRating = currentRating === 1 ? 0.1 : 1;
     setRatings({ ...ratings, [itemId]: newRating });
-  };
+  }
 
-
-  const optimizeOrder = () => {
-    // Prepare the data for the post request
-    setIsOptimizing(true); // starts background animation
-
+  function handleGenerateClick() {
     const payload = {
       budget: parseFloat(budget),
       variety: variety,
       scores: ratings,
       restaurantId: restaurantId,
     };
-
-    axios.post(API_URL + '/optimize', payload)
-      .then(response => {
-        // convert price to a number
-        const orderWithNumericPrices = response.data.map((item: any) => ({
-          ...item,
-          price: parseFloat(item.price),
-        }));
-        setOptimalOrder(orderWithNumericPrices);
-    })
-    .catch(error => {
-      console.error('Error optimizing order ', error);
-    })
-    .finally(() => {
-      setIsOptimizing(false);
-    });
-  };
-
-
-
-  // search functionality
+    optimizeOrder(payload);
+  }
+  
   const filteredMenu = menu.filter(item =>
     item.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-
   return (
     <div className="App">
-
       <StretchCompressFilter />
-      <Background isOptimizing={isOptimizing} />
+      <Background isOptimizing={animationClass === 'shrinking-effect'} />
 
       <div className="container">
         <h1>Order Optimizer</h1>
-
         <div className="instructions">
           Give your favorite items a thumbs up, set your budget and variety preference,
           then generate your optimal order!
         </div>
 
-        <BudgetEnterer budget={budget} setBudget={setBudget} />
+        <div className={animationClass}>
+          <BudgetEnterer budget={budget} setBudget={setBudget} />
+          <MenuSection
+            menuItems={filteredMenu}
+            ratings={ratings}
+            searchTerm={searchTerm}
+            onSearchChange={setSearchTerm}
+            onRateItem={handleRating}
+          />
+          <VarietySlider variety={variety} setVariety={setVariety} />
+        </div>
 
-        <MenuSection menuItems={filteredMenu} ratings={ratings} searchTerm={searchTerm} onSearchChange={setSearchTerm} onRateItem={handleRating}/>
-
-        <VarietySlider variety={variety} setVariety={setVariety} />
-
-
-        <button className="generate-button glass" onClick={optimizeOrder}>
+        <button className="generate-button glass" onClick={handleGenerateClick}>
           Generate
         </button>
 
