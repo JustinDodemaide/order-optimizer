@@ -42,7 +42,7 @@ const ParticleBackground: React.FC<ParticleBackgroundProps> = ({ isOptimizing })
           default: 'out' as const,
         },
         random: true,
-        speed: isOptimizing ? 4 : 2,
+        speed: 2,//isOptimizing ? 4 : 1,
         straight: false,
       },
       number: {
