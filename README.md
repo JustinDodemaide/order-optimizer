@@ -62,7 +62,7 @@ DATABASE_URL=your_postgresql_connection_string
 npm run dev
 ```
 
-6. **Go to** `http://localhost:3000` in your browser
+6. Go to `http://localhost:3000` in your browser
 
 ## How It Works
 
